@@ -1,0 +1,43 @@
+services:
+  web:
+    build: .
+    container_name: tandem_web
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DB_NAME=${DB_NAME}
+      - MONGODB_URI=${MONGODB_URI}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - tandem_network
+
+  db:
+    image: mongo:latest
+    container_name: tandem_db
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+    volumes:
+      - db_data:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tandem_network
+
+networks:
+  tandem_network:
+    driver: bridge
+
+volumes:
+  db_data:

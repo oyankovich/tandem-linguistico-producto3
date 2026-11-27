@@ -9,6 +9,11 @@ import {
     usuariosMutation
 } from './usuarios.js';
 
+import {
+    seleccionesQuery,
+    seleccionesMutation
+} from './selecciones.js';
+
 // Consultas
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
@@ -19,7 +24,8 @@ const RootQuery = new GraphQLObjectType({
                 return 'Servidor GraphQL y MongoDB operativos';
             }
         },
-        ...usuariosQuery
+        ...usuariosQuery,
+        ...seleccionesQuery
     }
 });
 
@@ -27,7 +33,8 @@ const RootQuery = new GraphQLObjectType({
 const RootMutation = new GraphQLObjectType({
     name: 'RootMutationType',
     fields: {
-        ...usuariosMutation
+        ...usuariosMutation,
+        ...seleccionesMutation
     }
 });
 
